@@ -1,6 +1,17 @@
 import csv
 import ROOT as r
 
+
+def versions(sn=None):
+    if 103 <= sn <= 110:
+        return "preprod. uHTR v1.3r"
+    if 111 <= sn <= 114:
+        return "HF prod. uHTR v1.4"
+    if 13 <= sn <= 16:
+        return "HBHE preprod. uHTR v1.5"
+    return ""
+
+
 def results(sn, gtx, run, okLen=11):
     d = {-5: " RX Sampling Point(tap)",
           -2: " # Errs",
