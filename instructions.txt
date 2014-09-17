@@ -1,0 +1,35 @@
+log in as
+PCWISCMS04\daq
+
+Choose a crate
+AMC13tool.exe -N sn
+i 0-11  # to enable TTC to all slots
+
+Choose a uHTR
+Do clock setup with uHTRtool.exe
+
+Connect UMN JTAG programming box, select & enable FRONT FPGA
+Loop back MTP patch cable (FF) between uHTR TX and RX
+
+Start --> All Programs --> Xilinx Design Tools --> LabTools 14.6 --> ChipScope Pro Analyzer
+File --> Open Project --> U:\uhtr_firmware\ibert_all.cpj
+JTAG Chain --> Xilinx Platform USB Cable --> 750kHz --> OK
+Right click DEV:0 MyDevice0 (XC6VLX240T) --> Configure --> U:\uhtr_firmware\ibert_all.bit
+(wait approximately 2 minutes; progress indicator is in lower right corner)
+Double click IBERT Console --> Answer YES at the dialog box
+
+Change JTAG scan rate to 5 s
+uninvert GTX_X0Y2
+  invert GTX_X0Y9
+uninvert GTX_X0Y14
+  invert GTX_X0Y21
+
+expect recovered clock at 6.412 Gbps or 6.413 Gbps (NOT 6.400 Gbps)
+reset all 12 BER counters
+wait for 1e12: check error counts
+Click tab "Sweep Test Settings"
+Choose GTX_X0Y0
+Left Edge: 0
+Right Edge: 127
+Increment: 1
+Start
