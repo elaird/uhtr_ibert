@@ -5,41 +5,19 @@ import ROOT as r
 
 
 def csvFileName(sn=0, gtx=0, run="", **_):
-    fileName = "gtx%d_%s.csv" % (gtx, run)
+    fileName = "gtx%s_%s.csv" % (gtx.split("_")[-1], run)
     return "jumper_test/uHTR%03d/%s" % (sn, fileName)
-
-
-def graphs(xMin=0.0, xMax=1.0):
-    gtxs = [12, 21, 16]
-    runs = ["a", "b", "c", "c2", "d"]
-    
-    out = {}
-    for gtx in gtxs:
-        for run in runs:
-            key = (gtx, run)
-
-            g = r.TGraph()
-            g.SetName("%d_%s" % key)
-            res = common.results(105, gtx, run, func=csvFileName)
-            if not res:
-                continue
-            phases = [x[0] for x in res]
-            pMin = min(phases)
-            pMax = max(phases)
-            
-            assert (pMax - pMin), "%d_%d" % (pMax, pMin)
-            for i, (phase, nErrors, ber) in enumerate(res):
-                x = xMin + (xMax - xMin) * (phase - pMin) / (pMax - pMin)
-                g.SetPoint(i, x, ber)
-            out[key] = g
-    return out
 
 
 def summary(fileName="", berMin=None, berMax=1.0, nRuns=5, samplePoint=None):
     assert fileName
     assert berMin
 
-    grs = graphs()
+    grs = common.graphs(uhtrs=[105],
+                        runs=["a", "b", "c", "c2", "d"],
+                        gtxes=[12, 21, 16],
+                        csvFileNameFunc=csvFileName,
+                        )
     c = r.TCanvas()
     c.Divide(2, 2)
 
@@ -66,11 +44,11 @@ def summary(fileName="", berMin=None, berMax=1.0, nRuns=5, samplePoint=None):
     line.SetLineStyle(2)
     for key, g in sorted(grs.iteritems()):
         #iPad = key[0] - 102
-        iPad = {12: 1, 21: 2, 16:3}[key[0]]
+        iPad = {12: 1, 21: 2, 16:3}[key[1]]
         c.cd(iPad)
         if not drawn[iPad]:
             h2 = h.DrawClone()
-            h2.SetTitle("uHTR 105 GTX %d" % key[0])
+            h2.SetTitle("uHTR 105 GTX %d" % key[1])
             keep.append(h2)
             drawn[iPad] = True
             leg = r.TLegend(0.14, 0.85, 0.44, 0.15)
@@ -83,7 +61,7 @@ def summary(fileName="", berMin=None, berMax=1.0, nRuns=5, samplePoint=None):
                 leg.AddEntry(line, "IBERT sampling point", "l")
             leg.Draw("same")
 
-        run = key[1]
+        run = key[-1]
         color, name = colorsLegs[run]
         g.SetLineColor(color)
         g.SetMarkerColor(color)
@@ -108,4 +86,5 @@ def summary(fileName="", berMin=None, berMax=1.0, nRuns=5, samplePoint=None):
 
 
 if __name__ == "__main__":
+    r.gROOT.SetBatch(True)
     summary(fileName="uhtr_jumper.pdf", berMin=1.863e-12, berMax=1.0e-2, samplePoint=0.598)
