@@ -12,22 +12,26 @@ def versions(sn=None):
     return ""
 
 
-def results(sn, gtx, run, ctp7=False):
+def csvFileName(dir="", sn=0, gtx=0, run=""):
+    fileName = "%s_sweep_results%s.csv" % (gtx, run)
+    return "%s/uHTR%03d/%s" % (dir, sn, fileName)
+
+
+def results(sn, gtx, run, ctp7=False, func=csvFileName):
     d = {-5: " RX Sampling Point(tap)",
           -2: " # Errs",
           -1: " BER",
           }
     if ctp7:
+        dir = "ctp7"
         del d[-2]
         d[-3] = " # Errs1"
         okLen = 10
     else:
+        dir = "optical_loopback"
         okLen = 11
 
-    if ctp7:
-        fileName = "ctp7/%03d/%s_sweep_results%s.csv" % (sn, gtx, run)
-    else:
-        fileName = "optical_loopback/uHTR%03d/%s_sweep_results%s.csv" % (sn, gtx, run)
+    fileName = func(dir=dir, sn=sn, gtx=gtx, run=run)
 
     out = []
     try:
