@@ -17,6 +17,7 @@ def summary(fileName="", uhtrs=[], runs=[""], pad=lambda x: 1,
         xMin = -0.5
         xMax = 0.5
         samplePoint = None
+        berMax = 1.0
     else:
         xMin = 0.0
         xMax = 1.0
@@ -52,10 +53,8 @@ def summary(fileName="", uhtrs=[], runs=[""], pad=lambda x: 1,
         c.cd(iPad)
         if not drawn[iPad]:
             h2 = h.DrawClone()
-            if ctp7:
-                h2.SetTitle("uHTR s/n %d" % uhtr)
-            else:
-                h2.SetTitle("%s, optical loop-back, 6.4 Gbps" % common.versions(uhtr))
+            title = "uHTR%d - CTP7" % uhtr if ctp7 else "%s, optical loop-back" % common.versions(uhtr)
+            h2.SetTitle("%s, 6.4 Gbps" % title)
             keep.append(h2)
 
             drawn[iPad] = True
@@ -75,14 +74,9 @@ def summary(fileName="", uhtrs=[], runs=[""], pad=lambda x: 1,
                 leg.AddEntry(line, "IBERT sampling point", "l")
             leg.Draw("same")
 
-        if ctp7:
-            iColor = 3 * gtx4 + gtx100 - 113
-            colors = range(1, 10) + [11, 25, 28]
-            colors[4] = r.kOrange - 3
-            color = colors[iColor]
-        else:
-            iColor = 1 + gtx4 + 4*(gtx100 - 112)
-            color = r.TColor.GetColorPalette(2 * iColor)
+        offset = 113 if ctp7 else 112
+        iColor = 1 + gtx4 + 4*(gtx100 - offset)
+        color = r.TColor.GetColorPalette(2 * iColor)
 
         g.SetLineStyle(1 + ((iColor-1) % 3))
         g.SetLineColor(color)
@@ -93,15 +87,12 @@ def summary(fileName="", uhtrs=[], runs=[""], pad=lambda x: 1,
         r.gPad.SetTickx()
         r.gPad.SetTicky()
         
-        name = "GTX%d_%d" % (gtx4, gtx100)
+        name = "_".join(g.GetName().split("_")[1:3])
         if run == "_1":
             name += " (100s)"
-        else:
+        elif not ctp7:
             name += " (1s)"
-        if ctp7:
-            leg.AddEntry(g, "%d_%d" % (gtx100, gtx4), "lp")
-        else:
-            leg.AddEntry(g, name, "l")
+        leg.AddEntry(g, name, "l")
 
     c.cd(0)
     c.Print(fileName)
