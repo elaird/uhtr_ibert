@@ -33,7 +33,13 @@ reset all 12 BER counters
 wait for 1e12: check error counts
 Click tab "Sweep Test Settings"
 Choose GTX_X0Y0
+Click Set Sweep params to current MGT Values.
+Click Log File Settings
+Click Browse
+go to U:\uhtr_firmware\uHTR{serial number}\{what it autofilled}
+click ok
 Left Edge: 0
 Right Edge: 127
-Increment: 1
+Increment: 1 
 Start
+move on to next test GTX
