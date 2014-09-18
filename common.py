@@ -61,20 +61,30 @@ def results(sn, gtx, run, ctp7=False, func=csvFileName):
     return out
 
 
-def graphs(xMin=0.0, xMax=1.0, uhtrs=[], runs=[""], ctp7=False):
-    gtxes = range(113, 116) if ctp7 else range(112, 118)
+def graphs(xMin=0.0, xMax=1.0, uhtrs=[], runs=[""], gtxes=[], ctp7=False,
+           csvFileNameFunc=csvFileName):
+    if not gtxes:
+        gtx4s = range(4)
+        if ctp7:
+            gtxes = range(113, 116)
+        else:
+            gtxes = range(112, 118)
+    else:
+        gtx4s = range(1)
 
     out = {}
     for uhtr in uhtrs:
         for gtx100 in gtxes:
-            for gtx4 in range(4):
+            for gtx4 in gtx4s:
                 for run in runs:
                     key = (uhtr, gtx100, gtx4, run)
 
                     g = r.TGraph()
                     gtx = "%s%d_%d" % ("GTH" if ctp7 else "GTX", gtx4, gtx100)
                     g.SetName("%d_%s_%s" % (uhtr, gtx, run))
-                    res = results(uhtr, gtx, run, ctp7=ctp7)
+                    res = results(uhtr, gtx, run,
+                                  ctp7=ctp7,
+                                  func=csvFileNameFunc)
                     if not res:
                         continue
                     phases = [x[0] for x in res]
