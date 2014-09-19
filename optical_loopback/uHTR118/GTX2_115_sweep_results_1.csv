@@ -1,0 +1,14 @@
+gt type, IBERT V6 GTX
+device, XC6VLX240T
+sw version, 14.6 P.68d (Build 14600.13.159.658)
+date, 09/19/2014
+time, 4:22 PM CEST
+voltage interval, 
+sweep test settings, RX Sampling Point, 0, 127, 
+sweep test settings, TX Diff Swing, 590 mV (0110), 590 mV (0110), 
+sweep test settings, TX Pre-Emphasis, 0.15 dB (0000), 0.15 dB (0000), 
+sweep test settings, TX Post-Emphasis, 0.18 dB (00000), 0.18 dB (00000), 
+sweep test settings, RX Eq, 0, 0, 
+=======================================================
+Iteration, Elapsed Time, TX Diff Swing, TX Pre-Emphasis, TX Post-Emphasis, RX Eq, RX Sampling Point(tap), Link, # Bits, # Errs, BER
+1, 00:00:1, 590 mV (0110), 0.15 dB (0000), 0.18 dB (00000), 0, 0, 1, 280154220, 20765257,  7.412E-002
