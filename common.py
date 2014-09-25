@@ -3,13 +3,14 @@ import ROOT as r
 
 
 def versions(sn=None):
+    tag = ""
     if 103 <= sn <= 110:
-        return "preprod. uHTR v1.3r"
+        tag = "v1.3r"
     if 111 <= sn <= 114:
-        return "HF prod. uHTR v1.4"
+        tag = "v1.4"
     if 13 <= sn <= 16:
-        return "HBHE preprod. uHTR v1.5"
-    return ""
+        tag = "v1.5"
+    return "uHTR %s %d" % (tag, sn)
 
 
 def csvFileName(dir="", sn=0, gtx=0, run=""):
