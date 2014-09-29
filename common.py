@@ -4,12 +4,14 @@ import ROOT as r
 
 def versions(sn=None):
     tag = ""
-    if 103 <= sn <= 110:
-        tag = "v1.3r"
-    if 111 <= sn <= 114:
-        tag = "v1.4"
     if 13 <= sn <= 16:
         tag = "v1.5"
+    elif 103 <= sn <= 110:
+        tag = "v1.3r"
+    elif 111 <= sn <= 144:
+        tag = "v1.4"
+    else:
+      print "version of s/n %d not known" % sn
     return "uHTR %s %d" % (tag, sn)
 
 
