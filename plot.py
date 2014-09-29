@@ -138,10 +138,11 @@ def padDct(l=[]):
 
 def all_uhtrs():
     fileName = "all_uhtrs.pdf"
-    runs = ["", "_1"][:1]
     fullSnList = sns()
+    runs = [""]
 
-    summary(uhtrs=[], begin=True, runs=runs, fileName=fileName)
+    iMax = len(fullSnList) - 1
+    iMax -= (iMax % 4)
     for i, sn in enumerate(fullSnList):
         if i % 4:
             continue
@@ -152,9 +153,10 @@ def all_uhtrs():
 
         dct = padDct(snList)
         pad = lambda uhtr: dct[uhtr]
-        summary(uhtrs=snList, runs=runs, fileName=fileName, pad=pad)
-
-    summary(uhtrs=[], end=True, runs=runs, fileName=fileName)
+        summary(uhtrs=snList, runs=runs, fileName=fileName, pad=pad,
+                begin=(not i),
+                end=(i==iMax),
+                )
     os.system("cp -p %s ~/public/html/tmp/" % fileName)
 
 
