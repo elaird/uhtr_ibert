@@ -153,7 +153,10 @@ def all_uhtrs():
 
         dct = padDct(snList)
         pad = lambda uhtr: dct[uhtr]
-        summary(uhtrs=snList, runs=runs, fileName=fileName, pad=pad,
+        summary(uhtrs=snList,
+                fileName=fileName,
+                pad=pad,
+                runs=["latest"],  # magic string
                 begin=(not i),
                 end=(i==iMax),
                 )
