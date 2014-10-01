@@ -66,8 +66,6 @@ def summary(fileName="", uhtrs=[], runs=[""], pad=lambda x: 1,
             leg.SetFillStyle(0)
             if ctp7:
                 leg.SetHeader("CTP7 GTH")
-            else:
-                leg.SetHeader("uHTR s/n %d" % uhtr)
             keep.append(leg)
             if samplePoint is not None:
                 line.DrawLine(samplePoint, berMin, samplePoint, berMax)
@@ -93,6 +91,7 @@ def summary(fileName="", uhtrs=[], runs=[""], pad=lambda x: 1,
         elif not ctp7:
             name += " (1s)"
         leg.AddEntry(g, name, "l")
+        leg.SetHeader("%d" % (leg.GetNRows() - 2))
 
     c.cd(0)
     c.Print(fileName)
@@ -110,19 +109,57 @@ def ctp7():
             pad=lambda uhtr: uhtr - 102,
             ctp7=True)
 
-def reworked():
-    fileName = "reworked_uhtrs.pdf"
-    runs = ["", "_1"]
-    pad = lambda uhtr: 1 + (uhtr - 103) % 4
-    summary(uhtrs=[103, 104, 106], begin=True, runs=runs, fileName=fileName, pad=pad)
-    summary(uhtrs=[107, 109, 110], end=True,   runs=runs, fileName=fileName, pad=pad)
+
+def compare_versions():
+    fileName = "compare_versions.pdf"
+    pad = lambda uhtr: 1 + {110:0, 111:1, 14:2}[uhtr]
+    summary(uhtrs=[110, 111, 14], begin=True, end=True, fileName=fileName, pad=pad)
     os.system("cp -p %s ~/public/html/tmp/" % fileName)
 
 
-def new():
-    fileName = "new_uhtrs.pdf"
-    pad = lambda uhtr: 1 + {110:0, 111:1, 14:2}[uhtr]
-    summary(uhtrs=[110, 111, 14], begin=True, end=True, fileName=fileName, pad=pad)
+def sns(dir="optical_loopback", snMin=115):
+    out = []
+    for subdir in os.listdir(dir):
+        try:
+            sn = int(subdir[-3:])
+            if snMin <= sn:
+                out.append(sn)
+        except:
+            print "Skipping %s" % subdir
+    return sorted(out)
+
+
+def padDct(l=[]):
+    out = {}
+    for i, x in enumerate(l):
+        out[x] = 1 + i
+    return out
+
+
+def all_uhtrs():
+    fileName = "all_uhtrs.pdf"
+    fullSnList = sns()
+    runs = [""]
+
+    iMax = len(fullSnList) - 1
+    iMax -= (iMax % 4)
+    for i, sn in enumerate(fullSnList):
+        if i % 4:
+            continue
+
+        snList = []
+        for j in range(i, min([i + 4, len(fullSnList)])):
+            snList.append(fullSnList[j])
+
+        dct = padDct(snList)
+        pad = lambda uhtr: dct[uhtr]
+        summary(uhtrs=snList,
+                fileName=fileName,
+                pad=pad,
+                runs=["latest"],  # magic string
+                begin=(not i),
+                end=(i==iMax),
+                )
     os.system("cp -p %s ~/public/html/tmp/" % fileName)
 
 
@@ -131,6 +168,6 @@ if __name__ == "__main__":
     r.gROOT.SetBatch(True)
     r.gErrorIgnoreLevel = 2000
 
-    reworked()
-    new()
-    ctp7()
+    #ctp7()
+    #compare_versions()
+    all_uhtrs()
