@@ -19,6 +19,7 @@ Start --> All Programs --> Xilinx Design Tools --> LabTools 14.6 --> ChipScope P
 File --> Open Project --> U:\uhtr_firmware\ibert_all.cpj
 JTAG Chain --> Xilinx Platform USB Cable --> 750kHz --> OK
 Right click DEV:0 MyDevice0 (XC6VLX240T) --> Configure --> U:\uhtr_firmware\ibert_all.bit
+check the clean install box then hit start.(If this box isn't clicked, links may not be stable)
 (wait approximately 2 minutes; progress indicator is in lower right corner)
 Double click IBERT Console --> Answer YES at the dialog box
 
