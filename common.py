@@ -1,5 +1,6 @@
 import csv
 import os
+import sys
 import ROOT as r
 
 
@@ -9,7 +10,7 @@ def versions(sn=None):
         tag = "v1.5"
     elif 103 <= sn <= 110:
         tag = "v1.3r"
-    elif 111 <= sn <= 144:
+    elif 111 <= sn <= 155:
         tag = "v1.4"
     else:
       print "version of s/n %d not known" % sn
@@ -34,7 +35,7 @@ def datetimes(l):
     return dts
 
 
-def latest(l=[]):
+def latest(l=[], okZones=["CEST", "CET"]):
     tuples = []
     for d in datetimes(l):
         month, day, year = d["date"].split("/")
@@ -42,7 +43,9 @@ def latest(l=[]):
         n += int(month) * 31
         n += int(year) * 31 * 12
         fields = d["time"].split()
-        assert fields[2] == "CEST"
+        if fields[2] not in okZones:
+            print fields
+            sys.exit("Expected %s is not in %s." % (fields[2], str(okZones)))
         n *= 60*24  # minutes per day
         hm = fields[0].split(":")
         hour = int(hm[0])

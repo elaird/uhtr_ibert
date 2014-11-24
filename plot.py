@@ -6,7 +6,7 @@ import ROOT as r
 
 
 def summary(fileName="", uhtrs=[], runs=[""], pad=lambda x: 1,
-            berMin=1.863e-13, berMax=1.0e-2,
+            berMin=1.863e-13, berMax=1.0,
             ctp7=False, begin=False, end=False):
 
     assert fileName
@@ -61,7 +61,7 @@ def summary(fileName="", uhtrs=[], runs=[""], pad=lambda x: 1,
             if ctp7:
                 leg = r.TLegend(0.44, 0.85, 0.64, 0.15)
             else:
-                leg = r.TLegend(0.14, 0.85, 0.44, 0.15)
+                leg = r.TLegend(0.14, 0.80, 0.44, 0.15)
             leg.SetBorderSize(0)
             leg.SetFillStyle(0)
             if ctp7:
@@ -91,7 +91,12 @@ def summary(fileName="", uhtrs=[], runs=[""], pad=lambda x: 1,
         elif not ctp7:
             name += " (1s)"
         leg.AddEntry(g, name, "l")
-        leg.SetHeader("%d" % (leg.GetNRows() - 2))
+
+        nFibers = leg.GetNRows() - 2
+        if nFibers == 24:
+            leg.SetHeader("%d" % nFibers)
+        else:
+            leg.SetHeader("#color[2]{%d}" % nFibers)
 
     c.cd(0)
     c.Print(fileName)
